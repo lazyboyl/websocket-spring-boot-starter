@@ -1,5 +1,6 @@
 package com.github.lazyboyl.websocket.integrate;
 
+import com.github.lazyboyl.websocket.constant.WebSocketProperties;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -57,6 +58,12 @@ public class WebSocketScannerRegister implements ImportBeanDefinitionRegistrar, 
         MutablePropertySources m = c.getPropertySources();
         Properties p = new Properties();
         p.put("webSocket.scan.package", annoAttrs.getStringArray("webSocketScanPackage"));
+        for (WebSocketProperties wsp : WebSocketProperties.values()) {
+            String val = environment.getProperty(wsp.getKey());
+            if (val == null || "".equals(val)) {
+                p.put(wsp.getKey(), wsp.getDefaultValue());
+            }
+        }
         m.addFirst(new PropertiesPropertySource("defaultProperties", p));
         scanner.doScan(StringUtils.toStringArray(basePackages));
     }
