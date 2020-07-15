@@ -11,7 +11,7 @@ public class SocketResponse {
         super();
     }
 
-    public SocketResponse(int code, String s) {
+    public SocketResponse(int code, String msg) {
         this.msg = msg;
         this.code = code;
     }

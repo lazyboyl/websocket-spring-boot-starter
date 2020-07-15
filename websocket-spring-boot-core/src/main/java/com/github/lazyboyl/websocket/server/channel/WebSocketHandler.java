@@ -205,7 +205,17 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             for (int i = 0; i < ps.length; i++) {
                 Parameter p = ps[i];
                 if (isMyClass(parameterTypesClass[i])) {
-                    obj[i] = paramMap.get(p.getName());
+                    if(parameterTypesClass[i].getName().equals("java.util.Map")){
+                        obj[i] = paramMap;
+                    } else if (parameterTypesClass[i].getName().equals("java.util.List")){
+                        try {
+                            obj[i] = JsonUtils.objToList(paramMap.get(p.getName()),ClassLoader.getSystemClassLoader().loadClass(p.getParameterizedType().getTypeName().replace("java.util.List<","").replace(">","")));
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        obj[i] = paramMap.get(p.getName());
+                    }
                 } else {
                     if (parameterTypesClass[i].getName().equals(HttpHeaders.class.getName())) {
                         obj[i] = paramMap.get("headers");
