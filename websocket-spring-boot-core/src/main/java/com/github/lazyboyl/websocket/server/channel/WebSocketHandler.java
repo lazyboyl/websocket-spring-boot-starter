@@ -49,9 +49,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         System.out.println("与客户端断开连接，通道关闭！" + ctx.channel().id().asLongText());
-        NettySocketServer.channelGroup.remove(ctx.channel());
         List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
-        doHandlerListenter(ctx, nettyBeanDefinitions);
+        doHandlerListenter(ctx, nettyBeanDefinitions,"channelInactive");
     }
 
     /**
@@ -110,17 +109,17 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
     }
 
     /**
-     * 功能描述：通道关闭的时候的监听事件
+     * 功能描述：通道关闭/开启的时候的监听事件
      *
      * @param ctx                  当前关闭的通道对象
      * @param nettyBeanDefinitions 待响应的方法
      */
-    protected void doHandlerListenter(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions) {
+    protected void doHandlerListenter(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions,String action) {
         for (NettyBeanDefinition nbd : nettyBeanDefinitions) {
             for (Map.Entry<String, NettyMethodDefinition> entry : nbd.getMethodMap().entrySet()) {
                 String[] k1s = entry.getKey().split("\\.");
                 Object[] obj = new Object[]{ctx};
-                if (k1s[k1s.length - 1].equals("channelInactive")) {
+                if (k1s[k1s.length - 1].equals(action)) {
                     try {
                         entry.getValue().getMethod().invoke(nbd.getObject(), obj);
                     } catch (IllegalAccessException e) {
@@ -205,14 +204,16 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             for (int i = 0; i < ps.length; i++) {
                 Parameter p = ps[i];
                 if (isMyClass(parameterTypesClass[i])) {
-                    if(parameterTypesClass[i].getName().equals("java.util.Map")){
+                    if (parameterTypesClass[i].getName().equals("java.util.Map")) {
                         obj[i] = paramMap;
-                    } else if (parameterTypesClass[i].getName().equals("java.util.List")){
+                    } else if (parameterTypesClass[i].getName().equals("java.util.List")) {
                         try {
-                            obj[i] = JsonUtils.objToList(paramMap.get(p.getName()),ClassLoader.getSystemClassLoader().loadClass(p.getParameterizedType().getTypeName().replace("java.util.List<","").replace(">","")));
+                            obj[i] = JsonUtils.objToList(paramMap.get(p.getName()), ClassLoader.getSystemClassLoader().loadClass(p.getParameterizedType().getTypeName().replace("java.util.List<", "").replace(">", "")));
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         }
+                    } else if ("java.util.".indexOf(parameterTypesClass[i].getName()) != -1) {
+                        SocketUtil.writeAndFlush(ctx.channel(), new SocketResponse(HttpResponseStatus.BAD_REQUEST.code(), "java.util系列暂时只支持map和list，其他类型暂不支持。"));
                     } else {
                         obj[i] = paramMap.get(p.getName());
                     }
@@ -267,8 +268,9 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
         } else {
             handshaker.handshake(ctx.channel(), request);
-            NettySocketServer.channelGroup.add(ctx.channel());
-            System.out.println("[" + ctx.channel().id().asLongText() + "]正在握手。。。");
+            System.out.println("------当前正在握手-------");
+            List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
+            doHandlerListenter(ctx, nettyBeanDefinitions,"handleShake");
         }
     }
 }

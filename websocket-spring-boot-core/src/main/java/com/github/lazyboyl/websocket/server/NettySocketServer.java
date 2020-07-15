@@ -11,8 +11,6 @@ import com.github.lazyboyl.websocket.server.channel.WebSocketHandler;
 import com.github.lazyboyl.websocket.util.NettyScanner;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -22,7 +20,6 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.concurrent.GlobalEventExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -49,11 +46,6 @@ public class NettySocketServer implements ApplicationContextAware {
      * 定义spring的ApplicationContext对象
      */
     private static ApplicationContext ac = null;
-
-    /**
-     * 存放所有的socketId的集合
-     */
-    public static ChannelGroup channelGroup = null;
 
     /**
      * websocket的controller的工厂扫描类
@@ -157,7 +149,6 @@ public class NettySocketServer implements ApplicationContextAware {
         for (String pack : webSocketScanPackage) {
             nettyScanner.initClasses(pack);
         }
-        channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
         webSocketControllerBeanFactory = WebSocketControllerBeanFactory.getInstance();
         injectionBean(WebSocketController.class, webSocketControllerBeanFactory, nettyScanner);
         websocketSecurityBeanFactory = WebsocketInterfaceBeanFactory.getInstance();

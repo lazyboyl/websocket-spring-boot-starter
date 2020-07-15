@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.lazyboyl</groupId>
     <artifactId>websocket-spring-boot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>websocket-spring-boot-starter</name>
     <description>这是一个让使用webSocket像使用springMVC一样的依赖</description>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.github.lazyboyl</groupId>
             <artifactId>websocket-spring-boot-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>

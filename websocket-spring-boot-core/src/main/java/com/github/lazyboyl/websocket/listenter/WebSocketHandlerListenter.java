@@ -23,4 +23,11 @@ public interface WebSocketHandlerListenter {
      */
     void channelInactive(ChannelHandlerContext ctx);
 
+    /**
+     * 功能描述： 当首次握手的时候的响应事件
+     *
+     * @param ctx     当前的通道对象
+     */
+    void handleShake(ChannelHandlerContext ctx);
+
 }
