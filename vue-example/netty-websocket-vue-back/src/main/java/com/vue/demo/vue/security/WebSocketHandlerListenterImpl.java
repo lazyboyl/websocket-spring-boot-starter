@@ -1,7 +1,7 @@
-package com.wesocket.demo.security;
+package com.vue.demo.vue.security;
 
 import com.github.lazyboyl.websocket.listenter.WebSocketHandlerListenter;
-import com.wesocket.demo.service.WebSocketCloseService;
+import com.vue.demo.vue.service.WebSocketCloseService;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,6 +34,6 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
 
     @Override
     public void handleShake(ChannelHandlerContext ctx) {
-
+        System.out.println("当前开启的通道的id是：" + ctx.channel().id().asLongText());
     }
 }

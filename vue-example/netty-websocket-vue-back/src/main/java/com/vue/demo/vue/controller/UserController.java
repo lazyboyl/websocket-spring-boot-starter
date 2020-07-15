@@ -1,10 +1,10 @@
-package com.wesocket.demo.controller;
+package com.vue.demo.vue.controller;
 
 import com.github.lazyboyl.websocket.annotation.WebSocketController;
 import com.github.lazyboyl.websocket.annotation.WebSocketRequestMapping;
-import com.wesocket.demo.entity.OrgVo;
-import com.wesocket.demo.entity.UserVo;
-import com.wesocket.demo.service.UserService;
+import com.vue.demo.vue.entity.OrgVo;
+import com.vue.demo.vue.entity.UserVo;
+import com.vue.demo.vue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

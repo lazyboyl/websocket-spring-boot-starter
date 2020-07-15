@@ -1,10 +1,10 @@
-package com.wesocket.demo.security;
+package com.vue.demo.vue.security;
 
 import com.github.lazyboyl.websocket.security.WebsocketSecurity;
 import com.github.lazyboyl.websocket.server.channel.entity.SocketRequest;
 import com.github.lazyboyl.websocket.server.channel.entity.SocketResponse;
 import com.github.lazyboyl.websocket.util.JsonUtils;
-import com.wesocket.demo.service.AuthService;
+import com.vue.demo.vue.service.AuthService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;

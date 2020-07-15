@@ -8,11 +8,11 @@
         <version>2.3.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.wesocket.demo</groupId>
-    <artifactId>wesocket-demo</artifactId>
+    <groupId>com.vue.demo</groupId>
+    <artifactId>vue-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>wesocket-demo</name>
-    <description>Demo project for Spring Boot</description>
+    <name>vue-demo</name>
+    <description>websocket的demo例子</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -22,8 +22,8 @@
 
         <dependency>
             <groupId>com.github.lazyboyl</groupId>
-            <artifactId>websocket-spring-boot-core</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <artifactId>websocket-spring-boot-starter</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>

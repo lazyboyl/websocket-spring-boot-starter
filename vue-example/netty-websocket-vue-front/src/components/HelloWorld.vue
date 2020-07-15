@@ -1,0 +1,104 @@
+<template>
+<div>
+  <button @click="getUserVoByUserEntity">getUserVoByUserEntity</button>
+  <button @click="getUserVoByUserId">getUserVoByUserId</button>
+  <button @click="getUserVoByUserMap">getUserVoByUserMap</button>
+  <button @click="getUserVoByUserOrgVo">getUserVoByUserOrgVo</button>
+  <button @click="getUserVoByUserList">getUserVoByUserList</button>
+  <button @click="getOrgVo">getOrgVo</button>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App',
+      websock: null,
+      wsuri: 'ws://localhost:8399/wsVue'
+    }
+  },
+  created () {
+    this.initWebSocket()
+  },
+  methods: {
+    getOrgVo () {
+      let actions = {'url': '/org/getOrgVo/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    getUserVoByUserList () {
+      let actions = {'url': '/user/getUserVoByUserList/', 'params': {'userVoList': [{'userId': 'abc'}, {'userId': 'abc11'}]}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    getUserVoByUserOrgVo () {
+      let actions = {'url': '/user/getUserVoByUserOrgVo/', 'params': {'orgId': 'aaaa', 'orgName': '大大', 'userVoList': [{'userId': 'abc'}, {'userId': 'abc11'}]}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    getUserVoByUserMap () {
+      let actions = {'url': '/user/getUserVoByUserMap/', 'params': {'userId': 'abc'}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    getUserVoByUserId () {
+      let actions = {'url': '/user/getUserVoByUserId/', 'params': {'userId': 'abc'}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    getUserVoByUserEntity () {
+      let actions = {'url': '/user/getUserVoByUserEntity/', 'params': {'userId': 'abc'}}
+      this.websocketsend(JSON.stringify(actions))
+    },
+    initWebSocket () { // 初始化weosocket
+      this.websock = new WebSocket(this.wsuri)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonopen () { // 连接建立之后执行send方法发送数据
+    },
+    websocketonerror () { // 连接建立失败重连
+      console.log('--出错了-')
+      this.initWebSocket()
+    },
+    websocketonmessage (e) { // 数据接收
+      const redata = JSON.parse(e.data)
+      console.log('后端发送过来的信息是：' + e.data)
+    },
+    websocketsend (Data) { // 数据发送
+      if(this.websock.readyState === 1){
+        this.websock.send(Data)
+      } else {
+        setTimeout(()=>{
+          this.websock = new WebSocket(this.wsuri)
+          this.websock.onmessage = this.websocketonmessage
+          this.websock.onopen = this.websocketonopen
+          this.websock.onerror = this.websocketonerror
+          this.websock.onclose = this.websocketclose
+          setTimeout(()=>{this.websocketsend(Data)},1000)
+        },1000)
+      }
+    },
+    websocketclose (e) { // 关闭
+      console.log('断开连接', e)
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>

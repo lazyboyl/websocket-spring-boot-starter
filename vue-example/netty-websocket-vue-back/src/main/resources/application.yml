@@ -1,0 +1,11 @@
+websocket:
+  # websocket的端口
+  port: 8399
+  # websocket前端的响应地址 ws://localhost:8399/wsVue
+  action: wsVue
+  thread:
+    # boss线程数
+    boss: 12
+    # work线程数
+    work: 12
+
