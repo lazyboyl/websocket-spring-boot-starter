@@ -6,12 +6,14 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
 
 ### 要求
 - jdk版本为1.8或1.8+
+- spring-boot版本为2.3.1.RELEASE
+- netty版本为4.1.42.Final
 
 ### example例子
 [基于vue的前后端分离的实现的例子](https://github.com/lazyboyl/websocket-spring-boot-starter/tree/master/vue-example)
 ### 快速开始
 
-- 添加依赖:
+#### 1、添加依赖:
 
 ```xml
      <dependency>
@@ -21,8 +23,8 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
      </dependency>
 ```
 
-- 在spring boot的启动类上加上`@EnableWebSocketServer`注解，并在该注解上设置好需要扫描的路径。
-
+#### 2、添加注解
+在spring boot的启动类上加上`@EnableWebSocketServer`注解，并在该注解上设置好需要扫描的路径。
 ```java
 @SpringBootApplication
 @EnableWebSocketServer(webSocketScanPackage = {"com.vue.demo.vue"})
@@ -34,7 +36,8 @@ public class VueDemoApplication {
 
 }
 ```
-- 编写第一个后端响应请求，你可以像写springMvc一样写websocket，完全不用像以前一样要做各种的配置和处理。
+#### 3、编写第一个后端响应请求
+你可以像写springMvc一样写websocket，完全不用像以前一样要做各种的配置和处理。
 ```java
 /**
  * @author linzf
@@ -58,8 +61,8 @@ public class UserController {
 
 }
 ```
--- 编写第一个拦截器，只需要实现`WebsocketSecurity`接口即可，`level`方法主要用于界定这个过滤器的执行的顺序，数字越大则级别越高，执行的
-排序也越高，`authentication`返回的值若为`true`则放行，反之则直接被拦截不再往下响应
+#### 4、编写第一个拦截器
+只需要实现`WebsocketSecurity`接口即可，`level`方法主要用于界定这个过滤器的执行的顺序，数字越大则级别越高，执行的排序也越高，`authentication`返回的值若为`true`则放行，反之则直接被拦截不再往下响应
 ```java
 /**
  * @author linzf
@@ -87,8 +90,8 @@ public class WebsocketSecurityImpl implements WebsocketSecurity {
     }
 }
 ```
-- 编写第一个监听器，只需实现`WebSocketHandlerListenter`接口即可，`level`方法主要用于界定这个监听器的执行的顺序，数字越大则级别越高，执行的
-排序也越高，`channelInactive`当通道关闭的时候执行的方法，`handleShake`当websocket尝试握手的时候执行的方法。
+#### 4、编写第一个监听器
+只需实现`WebSocketHandlerListenter`接口即可，`level`方法主要用于界定这个监听器的执行的顺序，数字越大则级别越高，执行的排序也越高，`channelInactive`当通道关闭的时候执行的方法，`handleShake`当websocket尝试握手的时候执行的方法。
 ```java
 /**
  * @author linzf
@@ -123,7 +126,8 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
     }
 }
 ```
-- 编写第一个前端响应请求，前端采用的是vue响应的方式，不过本质上还是用的是浏览器的本身自带的websocket因此写法上没什么差别，只是此处在与后端进行websocket交互的
+#### 5、编写第一个前端响应请求
+前端采用的是vue响应的方式，不过本质上还是用的是浏览器的本身自带的websocket因此写法上没什么差别，只是此处在与后端进行websocket交互的
 时候需要按照一定的格式往后端提交数据，格式如下：
 ```js
   {'url': 后端的请求地址, 'params': 请求的JSON数据}
@@ -134,6 +138,7 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
   {'url': '/user/getUserVoByUserId', 'params': {'userId':'123'}}
 ```
 最后直接调用我们的websocket对象的send方法请求后端即可。
+#### 6、编写前端的实现
 ```js
 <template>
 <div>
