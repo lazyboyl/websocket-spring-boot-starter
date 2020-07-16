@@ -2,7 +2,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
 ===================================
 ### 简介
 这是一个让使用webSocket像使用springMVC一样轻松的插件，你只需要一个简单的引入，就可以直接使用websocket，同时快速的集成到你的spring boot
-项目中，而无需关心其他任何的集成。
+项目中，原先的service和dao该怎么写还是怎么写，需要在websocket中使用的时候一样使用`@Autowired`注入即可。
 
 ### 要求
 - jdk版本为1.8或1.8+
@@ -71,6 +71,9 @@ public class UserController {
  */
 public class WebsocketSecurityImpl implements WebsocketSecurity {
 
+    /**
+    * 这个authService就是我们平时在spring里面写的service
+    **/
     @Autowired
     private AuthService authService;
 
@@ -100,6 +103,9 @@ public class WebsocketSecurityImpl implements WebsocketSecurity {
  */
 public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter {
 
+    /**
+    * 这个webSocketCloseService就是我们平时在spring里面写的service
+    **/
     @Autowired
     private WebSocketCloseService webSocketCloseService;
 
