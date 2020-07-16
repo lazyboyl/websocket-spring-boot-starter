@@ -28,25 +28,32 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
     /**
      * 功能描述： 注册netty的bean的类的扫描
      *
-     * @param c 需要进行处理的类的对象
+     * @param c           需要进行处理的类的对象
+     * @param environment 环境对象
      */
     @Override
-    protected void registerNettyBeanDefinition(Class c, Environment environment) throws IllegalAccessException, InstantiationException {
-        NettyBeanDefinition nettyBeanDefinition = new NettyBeanDefinition();
-        nettyBeanDefinition.setClassName(c.getName());
-        // 获取类上的注解的集合
-        nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
-        Object o = c.newInstance();
-        // 注册对象的响应的路径
-        registerNettyBeanDefinitionMappingPath(c, nettyBeanDefinition);
-        // 初始化类上的方法
-        registerNettyMethodDefinition(c, nettyBeanDefinition);
-        // 初始化类上的属性
-        registerNettyFieldDefinition(c, o, nettyBeanDefinition,environment);
-        // 实例化类
-        nettyBeanDefinition.setObject(o);
-        nettyBeanDefinitionSetAdd(c.getName());
-        nettyBeanDefinitionMapPut(c.getName(), nettyBeanDefinition);
+    protected void registerNettyBeanDefinition(Class c, Environment environment) {
+        try {
+            NettyBeanDefinition nettyBeanDefinition = new NettyBeanDefinition();
+            nettyBeanDefinition.setClassName(c.getName());
+            // 获取类上的注解的集合
+            nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
+            Object o = c.newInstance();
+            // 注册对象的响应的路径
+            registerNettyBeanDefinitionMappingPath(c, nettyBeanDefinition);
+            // 初始化类上的方法
+            registerNettyMethodDefinition(c, nettyBeanDefinition);
+            // 初始化类上的属性
+            registerNettyFieldDefinition(c, o, nettyBeanDefinition, environment);
+            // 实例化类
+            nettyBeanDefinition.setObject(o);
+            nettyBeanDefinitionSetAdd(c.getName());
+            nettyBeanDefinitionMapPut(c.getName(), nettyBeanDefinition);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -98,9 +105,9 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
      * 功能描述： 解析响应的地址
      *
      * @param c                     class对象
-     * @param nettyMethodDefinition
-     * @param a
-     * @param nettyBeanDefinition
+     * @param nettyMethodDefinition bean的方法的实体对象
+     * @param a                     WebSocketRequestMapping对象
+     * @param nettyBeanDefinition   bean的保存实体对象
      */
     protected void parseNettyRequestMapping(Class c, NettyMethodDefinition nettyMethodDefinition, WebSocketRequestMapping a, NettyBeanDefinition nettyBeanDefinition) {
         String[] value = a.value();
@@ -110,7 +117,7 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
         }
         parseUrl(actionPath);
         String[] mappingPath = nettyBeanDefinition.getMappingPath();
-        if (mappingPath !=null && mappingPath.length > 0) {
+        if (mappingPath != null && mappingPath.length > 0) {
             parseUrl(mappingPath);
             for (String s : mappingPath) {
                 for (String p : actionPath) {
@@ -135,7 +142,7 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
     /**
      * 功能描述： 重新处理响应的url地址，例如 /dict/add处理成为 dict/add
      *
-     * @param url
+     * @param url 需重新处理的地址
      */
     protected void parseUrl(String[] url) {
         for (int i = 0; i < url.length; i++) {

@@ -55,7 +55,7 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
      * @param c           需要进行处理的类的对象
      * @param environment 系统配置的环境对象
      */
-    protected void registerNettyBeanDefinition(Class c, Environment environment) throws IllegalAccessException, InstantiationException {
+    protected void registerNettyBeanDefinition(Class c, Environment environment) {
 
     }
 
@@ -63,7 +63,7 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
      * 功能描述： 根据bean的名称来获取bean信息
      *
      * @param name bean的全称
-     * @return
+     * @return NettyBeanDefinition
      */
     public NettyBeanDefinition getNettyBeanDefinition(String name) {
         return nettyBeanDefinitionMap.get(name);
@@ -73,7 +73,7 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
      * 功能描述： 根据uri来获取响应的method
      *
      * @param uri 响应地址
-     * @return
+     * @return NettyMethodDefinition
      */
     public NettyMethodDefinition getNettyMethodDefinition(String uri) {
         return nettyMethodDefinitionMap.get(uri);
@@ -82,18 +82,25 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
     /**
      * 功能描述：将class的注册到系统中
      *
-     * @param c 类的路径
+     * @param c           类的路径
+     * @param environment 环境对象
      */
-    public void registerBean(Class c, Environment environment) throws InstantiationException, IllegalAccessException {
+    public void registerBean(Class c, Environment environment) {
         if (!beanIsInit(c.getName())) {
             registerNettyBeanDefinition(c, environment);
         }
     }
 
+    /**
+     * @return Map
+     */
     public Map<String, NettyBeanDefinition> getNettyBeanDefinitionMap() {
         return nettyBeanDefinitionMap;
     }
 
+    /**
+     * @return Map
+     */
     public Map<String, NettyMethodDefinition> getNettyMethodDefinitionMap() {
         return nettyMethodDefinitionMap;
     }
@@ -104,6 +111,8 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
      * @param c                   class对象
      * @param o                   实例化的对象
      * @param nettyBeanDefinition netty的bean的信息
+     * @param environment         环境对象
+     * @throws IllegalAccessException 安全权限异常
      */
     protected void registerNettyFieldDefinition(Class c, Object o, NettyBeanDefinition nettyBeanDefinition, Environment environment) throws IllegalAccessException {
         Field[] sf = c.getDeclaredFields();
@@ -147,7 +156,7 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
      * @param o           类对象
      * @param val         需要注入的值
      * @param environment 全局环境配置
-     * @throws IllegalAccessException
+     * @throws IllegalAccessException 错误异常
      */
     protected void doInjectValue(Field f, Object o, Annotation val, Environment environment) throws IllegalAccessException {
         Value v = (Value) val;
@@ -210,8 +219,8 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
     /**
      * 功能描述： 新增
      *
-     * @param BeanFullName
-     * @param nettyBeanDefinition
+     * @param BeanFullName        bean的全名
+     * @param nettyBeanDefinition bean的实体对象
      */
     public void nettyBeanDefinitionMapPut(String BeanFullName, NettyBeanDefinition nettyBeanDefinition) {
         nettyBeanDefinitionMap.put(BeanFullName, nettyBeanDefinition);
@@ -255,21 +264,35 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
     }
 
 
+    /**
+     * @param beanName        bean的名称
+     * @param singletonObject bean对象
+     */
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
 
     }
 
+    /**
+     * @param beanName bean的名称
+     * @return 返回相应的对象
+     */
     @Override
     public Object getSingleton(String beanName) {
         return null;
     }
 
+    /**
+     * @return 返回bean的数组的集合
+     */
     @Override
     public String[] getSingletonNames() {
         return new String[0];
     }
 
+    /**
+     * @return 返回总的实例化的bean的数量
+     */
     @Override
     public int getSingletonCount() {
         return 0;

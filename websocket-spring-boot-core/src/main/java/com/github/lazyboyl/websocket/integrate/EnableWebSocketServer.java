@@ -18,14 +18,14 @@ public @interface EnableWebSocketServer {
     /**
      * 功能描述： 需要进行spring扫描的目录
      *
-     * @return
+     * @return String[]
      */
     String[] basePackages() default {"com.github.lazyboyl.websocket"};
 
     /**
      * 当前需要进行netty扫描的目录
      *
-     * @return
+     * @return String[]
      */
     String[] webSocketScanPackage() default {"com.github.lazyboyl.websocket"};
 

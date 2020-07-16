@@ -3,16 +3,36 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
 	</parent>
 	<groupId>com.github.lazyboyl</groupId>
 	<artifactId>websocket-spring-boot-core</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>1.0.0.RELEASE</version>
 	<name>websocket-spring-boot-core</name>
 	<description>核心包</description>
+
+	<developers>
+		<developer>
+			<name>linzefeng</name>
+			<email>282245889@qq.com</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/lazyboyl/websocket-spring-boot-starter</url>
+		<connection>https://github.com/lazyboyl/websocket-spring-boot-starter.git</connection>
+		<developerConnection>https://github.com/lazyboyl/websocket-spring-boot-starter</developerConnection>
+	</scm>
+
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -37,11 +57,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>2.3.1.RELEASE</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>2.3.1.RELEASE</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>

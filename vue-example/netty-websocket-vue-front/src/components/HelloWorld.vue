@@ -16,7 +16,7 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       websock: null,
-      wsuri: 'ws://localhost:8399/wsVue'
+      wsuri: 'ws://47.105.71.151:8399/wsVue'
     }
   },
   created () {

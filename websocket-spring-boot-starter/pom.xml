@@ -3,14 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
     </parent>
     <groupId>com.github.lazyboyl</groupId>
     <artifactId>websocket-spring-boot-starter</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <name>websocket-spring-boot-starter</name>
     <description>这是一个让使用webSocket像使用springMVC一样的依赖</description>
 
@@ -43,17 +42,19 @@
         <dependency>
             <groupId>com.github.lazyboyl</groupId>
             <artifactId>websocket-spring-boot-core</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
+            <version>1.0.0.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <version>2.3.1.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.3.1.RELEASE</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

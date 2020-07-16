@@ -29,17 +29,15 @@ public class NettyScanner {
      * 功能描述： 找到所有实现了当前接口的类
      *
      * @param interfaceClass 接口类
-     * @param <A>
-     * @return
-     * @throws Exception
+     * @return 类的集合
      */
-    public <A extends Annotation> Set<Class<?>> getInterfaceClasses(Class interfaceClass){
+    public <A extends Annotation> Set<Class<?>> getInterfaceClasses(Class interfaceClass) {
         Set<Class<?>> interfaces = new HashSet<>();
         if (classes != null && classes.size() > 0) {
             for (Class<?> cls : classes) {
-                Class [] is = cls.getInterfaces();
-                for(Class i:is){
-                    if(i.getName().equals(interfaceClass.getName())){
+                Class[] is = cls.getInterfaces();
+                for (Class i : is) {
+                    if (i.getName().equals(interfaceClass.getName())) {
                         interfaces.add(cls);
                     }
                 }
@@ -53,9 +51,7 @@ public class NettyScanner {
      * 功能描述： 找到被某个注解所注解的类
      *
      * @param annotationClass 注解类
-     * @param <A>
-     * @return
-     * @throws Exception
+     * @return 类的集合
      */
     public <A extends Annotation> Set<Class<?>> getAnnotationClasses(Class annotationClass) {
         //找用了annotationClass注解的类
@@ -121,7 +117,6 @@ public class NettyScanner {
                                     // 获取包名 把"/"替换成"."
                                     packageName = name.substring(0, idx).replace('/', '.');
                                 }
-                                System.out.println("packageName=>" + packageName);
                                 // 如果可以迭代下去 并且是一个包
                                 if ((idx != -1) || true) {
                                     // 如果是一个.class文件 而且不是目录
@@ -151,6 +146,12 @@ public class NettyScanner {
         return classes;
     }
 
+    /**
+     * @param classes     类的集合
+     * @param filePath    类的路径
+     * @param packageName 包名称
+     * @throws Exception 出错信息
+     */
     protected void addClass(Set<Class<?>> classes, String filePath, String packageName) throws Exception {
         File[] files = new File(filePath).listFiles();
         for (File f : files) {
@@ -170,6 +171,11 @@ public class NettyScanner {
         }
     }
 
+    /**
+     * @param classes    类的集合
+     * @param classsName 类的名称
+     * @throws Exception
+     */
     protected void doAddClass(Set<Class<?>> classes, final String classsName) throws Exception {
         ClassLoader classLoader = new ClassLoader() {
             @Override

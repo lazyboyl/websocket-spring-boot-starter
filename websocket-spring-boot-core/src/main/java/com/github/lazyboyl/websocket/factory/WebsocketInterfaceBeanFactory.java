@@ -29,7 +29,7 @@ public class WebsocketInterfaceBeanFactory extends NettyDefaultBeanFactory {
     /**
      * 功能描述： 获取排序以后的类
      *
-     * @return
+     * @return bean的list集合
      */
     public List<NettyBeanDefinition> getNettyBeanDefinitionList() {
         if (nettyBeanDefinitionList == null) {
@@ -57,23 +57,31 @@ public class WebsocketInterfaceBeanFactory extends NettyDefaultBeanFactory {
     /**
      * 功能描述： 注册netty的bean的类的扫描
      *
-     * @param c 需要进行处理的类的对象
+     * @param c           需要进行处理的类的对象
+     * @param environment 环境对象
      */
     @Override
-    protected void registerNettyBeanDefinition(Class c, Environment environment) throws IllegalAccessException, InstantiationException {
-        NettyBeanDefinition nettyBeanDefinition = new NettyBeanDefinition();
-        nettyBeanDefinition.setClassName(c.getName());
-        // 获取类上的注解的集合
-        nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
-        Object o = c.newInstance();
-        // 初始化类上的方法
-        registerNettyMethodDefinition(c, nettyBeanDefinition);
-        // 初始化类上的属性
-        registerNettyFieldDefinition(c, o, nettyBeanDefinition,environment);
-        // 实例化类
-        nettyBeanDefinition.setObject(o);
-        nettyBeanDefinitionSetAdd(c.getName());
-        nettyBeanDefinitionMapPut(c.getName(), nettyBeanDefinition);
+    protected void registerNettyBeanDefinition(Class c, Environment environment) {
+        try {
+            NettyBeanDefinition nettyBeanDefinition = new NettyBeanDefinition();
+            nettyBeanDefinition.setClassName(c.getName());
+            // 获取类上的注解的集合
+            nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
+            Object o = c.newInstance();
+            // 初始化类上的方法
+            registerNettyMethodDefinition(c, nettyBeanDefinition);
+            // 初始化类上的属性
+            registerNettyFieldDefinition(c, o, nettyBeanDefinition, environment);
+            // 实例化类
+            nettyBeanDefinition.setObject(o);
+            nettyBeanDefinitionSetAdd(c.getName());
+            nettyBeanDefinitionMapPut(c.getName(), nettyBeanDefinition);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

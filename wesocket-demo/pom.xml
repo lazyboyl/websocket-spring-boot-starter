@@ -22,8 +22,8 @@
 
         <dependency>
             <groupId>com.github.lazyboyl</groupId>
-            <artifactId>websocket-spring-boot-core</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <artifactId>websocket-spring-boot-starter</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>

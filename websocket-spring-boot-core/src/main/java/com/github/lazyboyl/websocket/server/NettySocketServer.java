@@ -143,6 +143,8 @@ public class NettySocketServer implements ApplicationContextAware {
 
     /**
      * 功能描述： 初始化bean的配置
+     *
+     * @throws Exception 出错信息
      */
     protected void initWebSocketConfig() throws Exception {
         NettyScanner nettyScanner = new NettyScanner();
@@ -164,8 +166,7 @@ public class NettySocketServer implements ApplicationContextAware {
      * @param cls          待注入的类型的class
      * @param factory      相应的工程
      * @param nettyScanner 扫描对象
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * @throws Exception 出错信息
      */
     protected void injectionBean(Class cls, NettyDefaultBeanFactory factory, NettyScanner nettyScanner) throws Exception {
         if (cls.isAnnotation()) {
@@ -190,6 +191,10 @@ public class NettySocketServer implements ApplicationContextAware {
         return ac.getBean(beanName);
     }
 
+    /**
+     * @param applicationContext applicationContext对象
+     * @throws BeansException bean的出错信息
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         ac = applicationContext;

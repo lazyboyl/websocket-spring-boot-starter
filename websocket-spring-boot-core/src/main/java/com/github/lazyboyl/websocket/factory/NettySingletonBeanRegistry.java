@@ -19,19 +19,21 @@ public interface NettySingletonBeanRegistry {
      * 功能描述： 根据名称来获取bean
      *
      * @param beanName bean的名称
-     * @return 相应的bean
+     * @return Object
      */
     Object getSingleton(String beanName);
 
     /**
      * 功能描述： 返回所有的单例的bean的信息
-     * @return
+     *
+     * @return String[]
      */
     String[] getSingletonNames();
 
     /**
      * 功能描述： 统计所有单例的bean的数量
-     * @return
+     *
+     * @return int
      */
     int getSingletonCount();
 

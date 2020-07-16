@@ -6,6 +6,7 @@ import com.github.lazyboyl.websocket.server.NettySocketServer;
 import com.github.lazyboyl.websocket.server.channel.entity.SocketRequest;
 import com.github.lazyboyl.websocket.server.channel.entity.SocketResponse;
 import com.github.lazyboyl.websocket.server.channel.entity.WebSocketRequestEntity;
+import com.github.lazyboyl.websocket.util.ClassUtil;
 import com.github.lazyboyl.websocket.util.JsonUtils;
 import com.github.lazyboyl.websocket.util.SocketUtil;
 import io.netty.buffer.Unpooled;
@@ -34,8 +35,12 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
     private static final AttributeKey<WebSocketServerHandshaker> HAND_SHAKE_ATTR = AttributeKey.valueOf("HAND_SHAKE");
 
 
+    /**
+     * @param ctx                    通道对象
+     * @param webSocketRequestEntity 请求实体
+     */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, WebSocketRequestEntity webSocketRequestEntity) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, WebSocketRequestEntity webSocketRequestEntity) {
         //处理握手
         if (webSocketRequestEntity.getRequest() != null) {
             this.handleShake(ctx, webSocketRequestEntity.getRequest());
@@ -46,18 +51,21 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
         }
     }
 
+    /**
+     * @param ctx 通道对象
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         System.out.println("与客户端断开连接，通道关闭！" + ctx.channel().id().asLongText());
         List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
-        doHandlerListenter(ctx, nettyBeanDefinitions,"channelInactive");
+        doHandlerListenter(ctx, nettyBeanDefinitions, "channelInactive");
     }
 
     /**
      * 功能描述： 处理websocket数据
      *
-     * @param ctx
-     * @param frame
+     * @param ctx   通道对象
+     * @param frame socket请求
      */
     private void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         // 判断是否关闭链路的指令
@@ -113,8 +121,9 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
      *
      * @param ctx                  当前关闭的通道对象
      * @param nettyBeanDefinitions 待响应的方法
+     * @param action               当前请求的操作类型
      */
-    protected void doHandlerListenter(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions,String action) {
+    protected void doHandlerListenter(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions, String action) {
         for (NettyBeanDefinition nbd : nettyBeanDefinitions) {
             for (Map.Entry<String, NettyMethodDefinition> entry : nbd.getMethodMap().entrySet()) {
                 String[] k1s = entry.getKey().split("\\.");
@@ -138,7 +147,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
      * @param ctx                  请求对象
      * @param nettyBeanDefinitions 定义的鉴权的实现类
      * @param socketRequest        请求的对象
-     * @return
+     * @return true：鉴权通过，false：鉴权不通过
      */
     protected Boolean doAuthentication(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions, SocketRequest socketRequest) {
         for (NettyBeanDefinition nbd : nettyBeanDefinitions) {
@@ -166,6 +175,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
      * 功能描述： 重新处理uri使其符合map的映射标准
      *
      * @param uri 请求地址
+     * @return 处理以后的请求地址
      */
     protected String parseUri(String uri) {
         if ("/".equals(uri.substring(0, 1))) {
@@ -184,8 +194,6 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
      * @param nettyMethodDefinition 方法对象
      * @param nettyBeanDefinition   类对象
      * @param paramMap              请求参数
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
      */
     protected void invokeMethod(ChannelHandlerContext ctx, NettyMethodDefinition nettyMethodDefinition, NettyBeanDefinition nettyBeanDefinition, Map<String, Object> paramMap) {
         Object object = null;
@@ -207,11 +215,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
                     if (parameterTypesClass[i].getName().equals("java.util.Map")) {
                         obj[i] = paramMap;
                     } else if (parameterTypesClass[i].getName().equals("java.util.List")) {
-                        try {
-                            obj[i] = JsonUtils.objToList(paramMap.get(p.getName()), ClassLoader.getSystemClassLoader().loadClass(p.getParameterizedType().getTypeName().replace("java.util.List<", "").replace(">", "")));
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        obj[i] = JsonUtils.objToList(paramMap.get(p.getName()), ClassUtil.getClass((p.getParameterizedType().getTypeName().replace("java.util.List<", "").replace(">", ""))));
                     } else if ("java.util.".indexOf(parameterTypesClass[i].getName()) != -1) {
                         SocketUtil.writeAndFlush(ctx.channel(), new SocketResponse(HttpResponseStatus.BAD_REQUEST.code(), "java.util系列暂时只支持map和list，其他类型暂不支持。"));
                     } else {
@@ -258,8 +262,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
     /**
      * 功能描述： 处理握手
      *
-     * @param ctx
-     * @param request
+     * @param ctx     通道对戏
+     * @param request http请求实体
      */
     private void handleShake(ChannelHandlerContext ctx, FullHttpRequest request) {
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(null, null, false);
@@ -270,7 +274,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             handshaker.handshake(ctx.channel(), request);
             System.out.println("------当前正在握手-------");
             List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
-            doHandlerListenter(ctx, nettyBeanDefinitions,"handleShake");
+            doHandlerListenter(ctx, nettyBeanDefinitions, "handleShake");
         }
     }
 }
