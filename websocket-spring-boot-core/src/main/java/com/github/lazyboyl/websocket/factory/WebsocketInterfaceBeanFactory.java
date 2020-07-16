@@ -67,7 +67,8 @@ public class WebsocketInterfaceBeanFactory extends NettyDefaultBeanFactory {
             nettyBeanDefinition.setClassName(c.getName());
             // 获取类上的注解的集合
             nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
-            Object o = c.newInstance();
+            // 初始化对象，包括构造函数的对象的初始化
+            Object o = doInstance(c, environment);
             // 初始化类上的方法
             registerNettyMethodDefinition(c, nettyBeanDefinition);
             // 初始化类上的属性
@@ -79,6 +80,8 @@ public class WebsocketInterfaceBeanFactory extends NettyDefaultBeanFactory {
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
 

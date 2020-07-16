@@ -1,11 +1,15 @@
 package com.github.lazyboyl.websocket.util;
 
+import com.github.lazyboyl.websocket.constant.ClassType;
+
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * @author linzf
@@ -15,10 +19,57 @@ import java.util.jar.JarFile;
 public class ClassUtil {
 
     /**
+     * 功能描述： 获取当前的类型的值
+     * @param typeName field的类型
+     * @param envVal 当前需要注入的值
+     * @return 转义以后的值
+     */
+    public static Object getFieldValue(String typeName, String envVal) {
+        switch (ClassType.getByClassName(typeName)) {
+            case StringType:
+                return envVal;
+            case LongType:
+                return Long.parseLong(envVal);
+            case longType:
+                return Long.parseLong(envVal);
+            case BooleanType:
+                if ("true".equals(envVal)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case booleanType:
+                if ("true".equals(envVal)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            case FloatType:
+                return Float.parseFloat(envVal);
+            case floatType:
+                return Float.parseFloat(envVal);
+            case DoubleType:
+                return Double.parseDouble(envVal);
+            case doubleType:
+                return Double.parseDouble(envVal);
+            case IntegerType:
+                return Integer.parseInt(envVal);
+            case intType:
+                return Integer.parseInt(envVal);
+            case MapType:
+                return JsonUtils.jsonToMap(envVal.replaceAll("\"", "").replaceAll("'", "\""));
+            case ListType:
+                return Arrays.stream(envVal.split(",")).collect(Collectors.toList());
+            default:
+                return null;
+        }
+    }
+
+    /**
      * 功能描述： 根据类的全路径来获取class
      *
      * @param classFullName 类的全路径
-     * @return
+     * @return 返回相应的class对象
      */
     public static Class getClass(String classFullName) {
         String[] classSplit = classFullName.split("\\.");

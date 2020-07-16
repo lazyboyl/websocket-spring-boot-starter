@@ -6,6 +6,7 @@ import com.github.lazyboyl.websocket.beans.NettyMethodDefinition;
 import org.springframework.core.env.Environment;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,8 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
             nettyBeanDefinition.setClassName(c.getName());
             // 获取类上的注解的集合
             nettyBeanDefinition.setClassAnnotation(c.getAnnotations());
-            Object o = c.newInstance();
+            // 初始化对象，包括构造函数的对象的初始化
+            Object o = doInstance(c, environment);
             // 注册对象的响应的路径
             registerNettyBeanDefinitionMappingPath(c, nettyBeanDefinition);
             // 初始化类上的方法
@@ -52,6 +54,8 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }

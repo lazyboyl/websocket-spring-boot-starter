@@ -6,13 +6,14 @@ import com.github.lazyboyl.websocket.beans.NettyFieldDefinition;
 import com.github.lazyboyl.websocket.beans.NettyMethodDefinition;
 import com.github.lazyboyl.websocket.constant.ClassType;
 import com.github.lazyboyl.websocket.server.NettySocketServer;
+import com.github.lazyboyl.websocket.util.ClassUtil;
 import com.github.lazyboyl.websocket.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -149,6 +150,52 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
         nettyBeanDefinition.setFieldMap(fieldMap);
     }
 
+
+    /**
+     * 功能描述： 初始化构造函数
+     *
+     * @param c           待初始化的构造函数
+     * @param environment 环境对象
+     * @return 返回实例化的对象
+     * @throws IllegalAccessException    异常信息
+     * @throws InstantiationException    异常信息
+     * @throws InvocationTargetException 无法实例化对象异常信息
+     */
+    protected Object doInstance(Class c, Environment environment) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Constructor[] declaredconstructors = c.getDeclaredConstructors();
+        for (Constructor constructor : declaredconstructors) {
+            Annotation annotation = constructor.getAnnotation(Autowired.class);
+            if (annotation != null) {
+                Class[] classes = constructor.getParameterTypes();
+                Type[] types = constructor.getGenericParameterTypes();
+                Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+                Parameter[] parameters = constructor.getParameters();
+                Object[] o = new Object[classes.length];
+                boolean isValueAnnotation;
+                for (int i = 0; i < classes.length; i++) {
+                    isValueAnnotation = false;
+                    for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                        if (parameterAnnotations[i][j] instanceof Value) {
+                            Value v = (Value) parameterAnnotations[i][j];
+                            isValueAnnotation = true;
+                            // 获取注解的值
+                            String envVal = environment.getProperty(v.value().replace("${", "").replace("}", ""));
+                            o[i] = ClassUtil.getFieldValue(types[i].getTypeName(), envVal);
+                            // 此处实现@value注解的数据的注入
+                            break;
+                        }
+                    }
+                    // 此处实现从spring处获取bean的注入
+                    if (!isValueAnnotation) {
+                        o[i] = NettySocketServer.getBean(parameters[i].getName());
+                    }
+                }
+                return constructor.newInstance(o);
+            }
+        }
+        return c.newInstance();
+    }
+
     /**
      * 功能描述： 实现六大类型和基本类型的注入
      *
@@ -163,55 +210,7 @@ public class NettyDefaultBeanFactory implements NettySingletonBeanRegistry {
         String envVal = environment.getProperty(v.value().replace("${", "").replace("}", ""));
         if (envVal != null && !"".equals(envVal)) {
             f.setAccessible(true);
-            switch (ClassType.getByClassName(f.getType().getName())) {
-                case StringType:
-                    f.set(o, envVal);
-                    break;
-                case LongType:
-                    f.set(o, Long.parseLong(envVal));
-                    break;
-                case longType:
-                    f.set(o, Long.parseLong(envVal));
-                    break;
-                case BooleanType:
-                    if ("true".equals(envVal)) {
-                        f.set(o, true);
-                    } else {
-                        f.set(o, false);
-                    }
-                    break;
-                case booleanType:
-                    if ("true".equals(envVal)) {
-                        f.set(o, true);
-                    } else {
-                        f.set(o, false);
-                    }
-                    break;
-                case FloatType:
-                    f.set(o, Float.parseFloat(envVal));
-                    break;
-                case floatType:
-                    f.set(o, Float.parseFloat(envVal));
-                    break;
-                case DoubleType:
-                    f.set(o, Double.parseDouble(envVal));
-                    break;
-                case doubleType:
-                    f.set(o, Double.parseDouble(envVal));
-                    break;
-                case IntegerType:
-                    f.set(o, Integer.parseInt(envVal));
-                    break;
-                case intType:
-                    f.set(o, Integer.parseInt(envVal));
-                    break;
-                case MapType:
-                    f.set(o, JsonUtils.jsonToMap(envVal.replaceAll("\"", "").replaceAll("'", "\"")));
-                    break;
-                case ListType:
-                    f.set(o, Arrays.stream(envVal.split(",")).collect(Collectors.toList()));
-                    break;
-            }
+            f.set(o, ClassUtil.getFieldValue(f.getType().getName(), envVal));
         }
     }
 
