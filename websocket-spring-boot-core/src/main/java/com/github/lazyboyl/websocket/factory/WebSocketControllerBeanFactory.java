@@ -1,6 +1,7 @@
 package com.github.lazyboyl.websocket.factory;
 
 import com.github.lazyboyl.websocket.annotation.WebSocketRequestMapping;
+import com.github.lazyboyl.websocket.annotation.WebSocketRequestParam;
 import com.github.lazyboyl.websocket.beans.NettyBeanDefinition;
 import com.github.lazyboyl.websocket.beans.NettyMethodDefinition;
 import org.springframework.core.env.Environment;
@@ -95,6 +96,21 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
             nettyMethodDefinition.setMethodName(m.getName());
             nettyMethodDefinition.setBeanName(c.getName());
             nettyMethodDefinition.setParameters(m.getParameters());
+            Annotation[][] parameterAnnotations = m.getParameterAnnotations();
+            String[] requestParamName = new String[parameterAnnotations.length];
+            for (int i = 0; i < parameterAnnotations.length; i++) {
+                if (parameterAnnotations[i].length == 0) {
+                    requestParamName[i] = "";
+                } else {
+                    for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                        if(parameterAnnotations[i][j] instanceof WebSocketRequestParam){
+                            WebSocketRequestParam wsrp = (WebSocketRequestParam) parameterAnnotations[i][j];
+                            requestParamName[i] = wsrp.name();
+                        }
+                    }
+                }
+            }
+            nettyMethodDefinition.setRequestParamName(requestParamName);
             methodMap.put(c.getName() + "." + m.getName(), nettyMethodDefinition);
             WebSocketRequestMapping a = m.getAnnotation(WebSocketRequestMapping.class);
             if (a == null) {

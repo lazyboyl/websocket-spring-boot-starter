@@ -6,6 +6,7 @@
   <button @click="getUserVoByUserOrgVo">getUserVoByUserOrgVo</button>
   <button @click="getUserVoByUserList">getUserVoByUserList</button>
   <button @click="getOrgVo">getOrgVo</button>
+  <button @click="getUserVoByUserIdRename">getUserVoByUserIdRename</button>
 </div>
 </template>
 
@@ -23,6 +24,10 @@ export default {
     this.initWebSocket()
   },
   methods: {
+    getUserVoByUserIdRename () {
+      let actions = {'url': '/user/getUserVoByUserIdRename/', 'params': {'uId': 'abc'}}
+      this.websocketsend(JSON.stringify(actions))
+    },
     getOrgVo () {
       let actions = {'url': '/org/getOrgVo/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
       this.websocketsend(JSON.stringify(actions))

@@ -209,6 +209,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             Parameter[] ps = nettyMethodDefinition.getParameters();
             Object[] obj = new Object[ps.length];
             Class[] parameterTypesClass = nettyMethodDefinition.getParameterTypesClass();
+            String [] requestParamName = nettyMethodDefinition.getRequestParamName();
             for (int i = 0; i < ps.length; i++) {
                 Parameter p = ps[i];
                 if (isMyClass(parameterTypesClass[i])) {
@@ -219,7 +220,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
                     } else if ("java.util.".indexOf(parameterTypesClass[i].getName()) != -1) {
                         SocketUtil.writeAndFlush(ctx.channel(), new SocketResponse(HttpResponseStatus.BAD_REQUEST.code(), "java.util系列暂时只支持map和list，其他类型暂不支持。"));
                     } else {
-                        obj[i] = paramMap.get(p.getName());
+                        if("".equals(requestParamName[i])){
+                            obj[i] = paramMap.get(p.getName());
+                        } else {
+                            obj[i] = paramMap.get(requestParamName[i]);
+                        }
                     }
                 } else {
                     if (parameterTypesClass[i].getName().equals(HttpHeaders.class.getName())) {

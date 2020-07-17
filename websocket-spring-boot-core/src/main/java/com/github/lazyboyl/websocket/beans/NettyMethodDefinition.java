@@ -59,6 +59,19 @@ public class NettyMethodDefinition {
      */
     private String beanName;
 
+    /**
+     * WebSocketRequestParam定义的别名
+     */
+    private String [] requestParamName;
+
+    public String[] getRequestParamName() {
+        return requestParamName;
+    }
+
+    public void setRequestParamName(String[] requestParamName) {
+        this.requestParamName = requestParamName;
+    }
+
     public Parameter[] getParameters() {
         return parameters;
     }

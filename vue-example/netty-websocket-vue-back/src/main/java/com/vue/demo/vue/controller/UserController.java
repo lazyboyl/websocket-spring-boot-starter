@@ -2,6 +2,7 @@ package com.vue.demo.vue.controller;
 
 import com.github.lazyboyl.websocket.annotation.WebSocketController;
 import com.github.lazyboyl.websocket.annotation.WebSocketRequestMapping;
+import com.github.lazyboyl.websocket.annotation.WebSocketRequestParam;
 import com.vue.demo.vue.entity.OrgVo;
 import com.vue.demo.vue.entity.UserVo;
 import com.vue.demo.vue.service.UserService;
@@ -21,6 +22,17 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * 功能描述： 模拟字段请求且使用别名的方式来实现根据用户ID来获取用户数据
+     *
+     * @param userId 用户的流水ID
+     * @return
+     */
+    @WebSocketRequestMapping("getUserVoByUserIdRename")
+    public UserVo getUserVoByUserIdRename(@WebSocketRequestParam(name = "uId") String userId) {
+        return userService.getUserVoByUserId(userId);
+    }
 
     /**
      * 功能描述： 模拟实体请求的方式来实现根据用户ID来获取用户数据

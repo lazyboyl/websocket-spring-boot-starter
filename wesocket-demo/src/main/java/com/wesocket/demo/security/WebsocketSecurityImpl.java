@@ -27,7 +27,7 @@ public class WebsocketSecurityImpl implements WebsocketSecurity {
 
     @Override
     public Boolean authentication(ChannelHandlerContext ctx, SocketRequest socketRequest) {
-        if(socketRequest.getUrl().indexOf("getOrgVo111")!=-1){
+        if(socketRequest.getUrl().indexOf("getOrgVo111")!=-1 || socketRequest.getUrl().indexOf("getOrgVo2222")!=-1){
             return true;
         }
         Boolean isPass = authService.authUrl(socketRequest.getUrl());

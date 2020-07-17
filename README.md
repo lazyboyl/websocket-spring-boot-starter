@@ -6,7 +6,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
 
 ### 要求
 - jdk版本为1.8或1.8+
-- spring-boot版本为2.3.1.RELEASE
+- spring-boot版本为2.0.1.RELEASE+
 - netty版本为4.1.42.Final
 
 ### example例子
@@ -19,7 +19,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
      <dependency>
          <groupId>com.github.lazyboyl</groupId>
          <artifactId>websocket-spring-boot-starter</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>1.0.1.RELEASE</version>
      </dependency>
 ```
 
@@ -47,6 +47,12 @@ public class VueDemoApplication {
 @WebSocketController
 @WebSocketRequestMapping("/user/")
 public class UserController {
+    
+    /**
+     * 这个userService就是我们平时在spring里面写的service
+     */
+    @Autowired
+    private UserService userService;
 
     /**
      * 功能描述： 模拟字段请求的方式来实现根据用户ID来获取用户数据
@@ -226,3 +232,8 @@ websocket:
         boss: 12
         work: 12
 ```
+---
+### 版本更新
+#### 1.0.1.RELEASE
+- `@WebSocketController`注解的类支持构造方法的方式注入的支持。
+- 新增`@WebSocketRequestParam`支持入参的自定义。
