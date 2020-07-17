@@ -1,9 +1,7 @@
 websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 ===================================
 ### 简介
-这是一个让使用webSocket像使用springMVC一样轻松的插件，你只需要一个简单的引入，就可以直接使用websocket，同时快速的集成到你的spring boot
-项目中，原先的service和dao该怎么写还是怎么写，需要在websocket中使用的时候一样使用`@Autowired`注入即可。
-
+在应用程序中你只需要几行代码就可以快速的构建websocket服务。
 ### 要求
 - jdk版本为1.8或1.8+
 - spring-boot版本为2.0.1.RELEASE+

@@ -2,7 +2,7 @@
   "name": "netty-websocket-vue-front",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "282245889@qq.com <575088Wuling>",
+  "author": "282245889@qq.com",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
