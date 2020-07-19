@@ -9,3 +9,6 @@ websocket:
     # work线程数
     work: 12
 
+user:
+  info: testInfo
+

@@ -7,6 +7,7 @@ import com.vue.demo.vue.entity.OrgVo;
 import com.vue.demo.vue.entity.UserVo;
 import com.vue.demo.vue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Value("${user.info}")
+    private String info;
+
     /**
      * 功能描述： 模拟字段请求且使用别名的方式来实现根据用户ID来获取用户数据
      *
@@ -31,6 +35,7 @@ public class UserController {
      */
     @WebSocketRequestMapping("getUserVoByUserIdRename")
     public UserVo getUserVoByUserIdRename(@WebSocketRequestParam(name = "uId") String userId) {
+        System.out.println("info=>" + info);
         return userService.getUserVoByUserId(userId);
     }
 
