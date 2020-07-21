@@ -122,9 +122,9 @@ public class NettySocketServer implements ApplicationContextAware {
                         p.addLast(new HttpServerCodec(4096, 8192, 1024 * 1024 * 10));
                         //HTTP 消息的合并处理
                         p.addLast(new HttpObjectAggregator(10 * 1024));
-                        p.addLast(new WebSocketServerProtocolHandler("/" + action));
                         // 新增ChunkedHandler，主要作用是支持异步发送大的码流（例如大文件传输），但是不占用过多的内存，防止发生java内存溢出错误
                         p.addLast(new ChunkedWriteHandler());
+                        p.addLast(new WebSocketServerProtocolHandler("/" + action));
                         p.addLast(new DispatchHandler());
                         p.addLast(new WebSocketHandler());
 

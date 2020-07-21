@@ -24,7 +24,7 @@ public class DispatchHandler extends SimpleChannelInboundHandler<Object> {
             if (isWebSocketHandShake(request)) {
                 ctx.fireChannelRead(new WebSocketRequestEntity(request));
             }
-        } else {
+        } else if (msg instanceof WebSocketFrame) {
             WebSocketFrame frame = (WebSocketFrame) msg;
             ctx.fireChannelRead(new WebSocketRequestEntity(frame));
         }

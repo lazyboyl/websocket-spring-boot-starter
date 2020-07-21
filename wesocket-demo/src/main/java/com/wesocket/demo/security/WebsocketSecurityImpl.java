@@ -31,7 +31,7 @@ public class WebsocketSecurityImpl implements WebsocketSecurity {
             return true;
         }
         Boolean isPass = authService.authUrl(socketRequest.getUrl());
-        System.out.println("----我在这里做了一个模拟的鉴权过程---");
+//        System.out.println("----我在这里做了一个模拟的鉴权过程---");
         if(!isPass){
             ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtils.objToJson(new SocketResponse(HttpResponseStatus.UNAUTHORIZED.code(), "授权不通过！"))));
         }
