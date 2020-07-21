@@ -19,12 +19,28 @@ import java.util.Map;
  */
 public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
 
+    /**
+     * 定义webSocketControllerBeanFactory对象
+     */
+    private static WebSocketControllerBeanFactory webSocketControllerBeanFactory;
+
+    /**
+     * 使得WebSocketControllerBeanFactory无法在外部new对象
+     */
     private WebSocketControllerBeanFactory() {
         super();
     }
 
+    /**
+     * 功能描述： 获取webSocketControllerBeanFactory的单例
+     *
+     * @return 返回webSocketControllerBeanFactory的单例对象
+     */
     public static WebSocketControllerBeanFactory getInstance() {
-        return new WebSocketControllerBeanFactory();
+        if (webSocketControllerBeanFactory == null) {
+            webSocketControllerBeanFactory = new WebSocketControllerBeanFactory();
+        }
+        return webSocketControllerBeanFactory;
     }
 
     /**
@@ -103,7 +119,7 @@ public class WebSocketControllerBeanFactory extends NettyDefaultBeanFactory {
                     requestParamName[i] = "";
                 } else {
                     for (int j = 0; j < parameterAnnotations[i].length; j++) {
-                        if(parameterAnnotations[i][j] instanceof WebSocketRequestParam){
+                        if (parameterAnnotations[i][j] instanceof WebSocketRequestParam) {
                             WebSocketRequestParam wsrp = (WebSocketRequestParam) parameterAnnotations[i][j];
                             requestParamName[i] = wsrp.name();
                         }

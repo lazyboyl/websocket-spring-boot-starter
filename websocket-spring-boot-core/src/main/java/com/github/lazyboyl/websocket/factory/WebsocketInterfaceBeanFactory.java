@@ -16,12 +16,29 @@ import java.util.stream.Collectors;
  */
 public class WebsocketInterfaceBeanFactory extends NettyDefaultBeanFactory {
 
+
+    /**
+     * 定义WebsocketInterfaceBeanFactory对象
+     */
+    private static WebsocketInterfaceBeanFactory websocketInterfaceBeanFactory;
+
+    /**
+     * 使得WebsocketInterfaceBeanFactory无法在外部new对象
+     */
     private WebsocketInterfaceBeanFactory() {
         super();
     }
 
+    /**
+     * 功能描述： 获取WebsocketInterfaceBeanFactory的单例
+     *
+     * @return 返回WebsocketInterfaceBeanFactory的单例对象
+     */
     public static WebsocketInterfaceBeanFactory getInstance() {
-        return new WebsocketInterfaceBeanFactory();
+        if (websocketInterfaceBeanFactory == null) {
+            websocketInterfaceBeanFactory = new WebsocketInterfaceBeanFactory();
+        }
+        return websocketInterfaceBeanFactory;
     }
 
     private List<NettyBeanDefinition> nettyBeanDefinitionList;
