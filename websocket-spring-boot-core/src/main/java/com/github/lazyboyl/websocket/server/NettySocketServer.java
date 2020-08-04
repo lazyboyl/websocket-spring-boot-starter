@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.net.InetSocketAddress;
+import java.util.concurrent.*;
 
 /**
  * @author linzf
@@ -104,8 +105,26 @@ public class NettySocketServer implements ApplicationContextAware {
     private String action;
 
     @PostConstruct
-    public void start() throws Exception {
+    public void init() throws Exception {
         initWebSocketConfig();
+        ExecutorService webSocketSinglePool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024),
+                Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+        webSocketSinglePool.execute(() -> {
+            try {
+                start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * 功能描述：启动netty
+     *
+     * @throws Exception 错误信息
+     */
+    protected void start() throws Exception {
         ServerBootstrap bootstrap = new ServerBootstrap();
         EventLoopGroup boss = new NioEventLoopGroup(bossThread);
         EventLoopGroup work = new NioEventLoopGroup(workThread);
@@ -199,4 +218,5 @@ public class NettySocketServer implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         ac = applicationContext;
     }
+
 }
