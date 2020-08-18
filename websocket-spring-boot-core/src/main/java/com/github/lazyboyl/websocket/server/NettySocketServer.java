@@ -104,6 +104,10 @@ public class NettySocketServer implements ApplicationContextAware {
     @Value("${websocket.action}")
     private String action;
 
+    /**
+     * 功能描述： 初始化netty配置
+     * @throws Exception 抛出异常
+     */
     @PostConstruct
     public void init() throws Exception {
         initWebSocketConfig();

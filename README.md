@@ -17,7 +17,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
      <dependency>
          <groupId>com.github.lazyboyl</groupId>
          <artifactId>websocket-spring-boot-starter</artifactId>
-         <version>1.0.2.RELEASE</version>
+         <version>1.0.3.RELEASE</version>
      </dependency>
 ```
 
@@ -232,6 +232,8 @@ websocket:
 ```
 ---
 ### 版本更新
+#### 1.0.3.RELEASE
+- 【发布失败】由于1.0.2发布失败，因此补发1.03版本。
 #### 1.0.2.RELEASE
 - 【BUG修复】修复netty与tomcat集成部署时，由于netty的启动导致tomcat启动失败。
 #### 1.0.1.RELEASE
