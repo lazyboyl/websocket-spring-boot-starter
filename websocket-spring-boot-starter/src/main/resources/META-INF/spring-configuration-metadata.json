@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "websocket.port",
+      "type": "java.lang.String",
+      "description": "websocket的默认端口号",
+      "defaultValue": "8399"
+    },
+    {
+      "name": "websocket.thread.boss",
+      "type": "java.lang.String",
+      "description": "boss的线程数",
+      "defaultValue": "14"
+    },
+    {
+      "name": "websocket.thread.work",
+      "type": "java.lang.String",
+      "description": "工作线程数",
+      "defaultValue": "14"
+    },
+    {
+      "name": "websocket.action",
+      "type": "java.lang.String",
+      "description": "websocket请求的地址",
+      "defaultValue": "ws"
+    }
+  ]
+}
