@@ -8,7 +8,10 @@ websocket:
     boss: 12
     # work线程数
     work: 12
-
 user:
   info: testInfo
+
+lazyboyl:
+  user:
+    name: 123
 

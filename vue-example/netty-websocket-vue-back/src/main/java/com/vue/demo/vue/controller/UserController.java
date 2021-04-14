@@ -28,6 +28,16 @@ public class UserController {
     private String info;
 
     /**
+     * 批量推送当前登录用户的信息
+     */
+    @WebSocketRequestMapping("sendMsg")
+    public void sendMsg(){
+        userService.sendMsg();
+    }
+
+
+
+    /**
      * 功能描述： 模拟字段请求且使用别名的方式来实现根据用户ID来获取用户数据
      *
      * @param userId 用户的流水ID
@@ -35,7 +45,7 @@ public class UserController {
      */
     @WebSocketRequestMapping("getUserVoByUserIdRename")
     public UserVo getUserVoByUserIdRename(@WebSocketRequestParam(name = "uId") String userId) {
-        System.out.println("info=>" + info);
+        System.out.println("info=>" + info );
         return userService.getUserVoByUserId(userId);
     }
 

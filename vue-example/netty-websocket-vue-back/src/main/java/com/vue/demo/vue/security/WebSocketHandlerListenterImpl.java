@@ -2,8 +2,12 @@ package com.vue.demo.vue.security;
 
 import com.github.lazyboyl.websocket.listenter.WebSocketHandlerListenter;
 import com.vue.demo.vue.service.WebSocketCloseService;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author linzf
@@ -11,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 类描述： 通道关闭监听器
  */
 public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter {
+
+    public static Map<String, Channel> chanelIdMap = new HashMap<>();
 
     @Autowired
     private WebSocketCloseService webSocketCloseService;
@@ -30,10 +36,12 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
     public void channelInactive(ChannelHandlerContext ctx) {
         System.out.println("当前关闭的通道的id是：" + ctx.channel().id().asLongText());
         webSocketCloseService.removeChannel(ctx.channel().id().asLongText());
+        chanelIdMap.remove(ctx.channel().id().asLongText());
     }
 
     @Override
     public void handleShake(ChannelHandlerContext ctx) {
         System.out.println("当前开启的通道的id是：" + ctx.channel().id().asLongText());
+        chanelIdMap.put(ctx.channel().id().asLongText(),ctx.channel());
     }
 }
