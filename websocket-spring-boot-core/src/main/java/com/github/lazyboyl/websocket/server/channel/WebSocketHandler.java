@@ -51,6 +51,14 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
         }
     }
 
+    //客户端与服务器建立连接的时候触发，
+    @Override
+    public void channelActive(ChannelHandlerContext ctx)  {
+        System.out.println("与客户端进行连接，通道开启！" + ctx.channel().id().asLongText());
+        List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
+        doHandlerListenter(ctx, nettyBeanDefinitions, "handleShake");
+    }
+
     /**
      * @param ctx 通道对象
      */

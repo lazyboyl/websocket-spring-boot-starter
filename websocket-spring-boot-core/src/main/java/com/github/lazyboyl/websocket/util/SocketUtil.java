@@ -1,6 +1,5 @@
 package com.github.lazyboyl.websocket.util;
 
-import com.github.lazyboyl.websocket.server.NettySocketServer;
 import com.github.lazyboyl.websocket.server.channel.entity.SocketResponse;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
