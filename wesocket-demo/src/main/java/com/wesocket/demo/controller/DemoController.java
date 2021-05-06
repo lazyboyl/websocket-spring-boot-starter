@@ -27,7 +27,8 @@ public class DemoController {
     @WebSocketRequestMapping("getOrgVo111")
     public OrgVo getOrgVo111(String orgId, String orgName) {
         System.out.println("获取到的请求数据是：" + orgId + "和" + orgName + "，端口是" + port);
-        return orgService.getOrgByOrgId(orgId);
+        throw new RuntimeException("adssada");
+//        return orgService.getOrgByOrgId(orgId);
     }
 
 

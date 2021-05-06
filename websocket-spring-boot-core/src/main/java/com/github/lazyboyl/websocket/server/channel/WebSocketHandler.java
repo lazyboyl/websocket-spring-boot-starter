@@ -53,7 +53,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
 
     //客户端与服务器建立连接的时候触发，
     @Override
-    public void channelActive(ChannelHandlerContext ctx)  {
+    public void channelActive(ChannelHandlerContext ctx) {
         System.out.println("与客户端进行连接，通道开启！" + ctx.channel().id().asLongText());
         List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.websocketHandlerListenterBeanFactory.getNettyBeanDefinitionList();
         doHandlerListenter(ctx, nettyBeanDefinitions, "handleShake");
@@ -119,8 +119,40 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            SocketUtil.writeAndFlush(ctx.channel(), new SocketResponse(HttpResponseStatus.BAD_REQUEST.code(), "JSON解析异常"));
+            List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.webSocketGolbalExceptionBeanFactory.getNettyBeanDefinitionList();
+            doExceptionHandler(ctx, nettyBeanDefinitions, "errorHandler", e);
+        }
+    }
+
+    /**
+     * 功能描述： 全局异常的处理的实现
+     *
+     * @param ctx                  当前通道对象
+     * @param nettyBeanDefinitions 相应的bean的集合
+     * @param action               全局异常的方法
+     * @param exception            异常信息
+     */
+    protected void doExceptionHandler(ChannelHandlerContext ctx, List<NettyBeanDefinition> nettyBeanDefinitions, String action, Exception exception) {
+        Object resultObj = null;
+        for (NettyBeanDefinition nbd : nettyBeanDefinitions) {
+            for (Map.Entry<String, NettyMethodDefinition> entry : nbd.getMethodMap().entrySet()) {
+                String[] k1s = entry.getKey().split("\\.");
+                Object[] obj = new Object[]{exception};
+                if (k1s[k1s.length - 1].equals(action)) {
+                    try {
+                        resultObj = entry.getValue().getMethod().invoke(nbd.getObject(), obj);
+                        ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtils.objToJson(resultObj)));
+                        return;
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        if (resultObj == null) {
+            exception.printStackTrace();
         }
     }
 
@@ -217,7 +249,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             Parameter[] ps = nettyMethodDefinition.getParameters();
             Object[] obj = new Object[ps.length];
             Class[] parameterTypesClass = nettyMethodDefinition.getParameterTypesClass();
-            String [] requestParamName = nettyMethodDefinition.getRequestParamName();
+            String[] requestParamName = nettyMethodDefinition.getRequestParamName();
             for (int i = 0; i < ps.length; i++) {
                 Parameter p = ps[i];
                 if (isMyClass(parameterTypesClass[i])) {
@@ -228,7 +260,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
                     } else if ("java.util.".indexOf(parameterTypesClass[i].getName()) != -1) {
                         SocketUtil.writeAndFlush(ctx.channel(), new SocketResponse(HttpResponseStatus.BAD_REQUEST.code(), "java.util系列暂时只支持map和list，其他类型暂不支持。"));
                     } else {
-                        if("".equals(requestParamName[i])){
+                        if ("".equals(requestParamName[i])) {
                             obj[i] = paramMap.get(p.getName());
                         } else {
                             obj[i] = paramMap.get(requestParamName[i]);
@@ -246,10 +278,10 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
             }
             try {
                 object = nettyMethodDefinition.getMethod().invoke(nettyBeanDefinition.getObject(), obj);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.webSocketGolbalExceptionBeanFactory.getNettyBeanDefinitionList();
+                doExceptionHandler(ctx, nettyBeanDefinitions, "errorHandler", e);
+                return;
             }
         }
         if (!"void".equals(nettyMethodDefinition.getReturnClass().getName())) {

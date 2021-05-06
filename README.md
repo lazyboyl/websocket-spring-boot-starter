@@ -17,7 +17,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
      <dependency>
          <groupId>com.github.lazyboyl</groupId>
          <artifactId>websocket-spring-boot-starter</artifactId>
-         <version>1.0.3.RELEASE</version>
+         <version>1.0.5.RELEASE</version>
      </dependency>
 ```
 
@@ -136,7 +136,27 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
     }
 }
 ```
-#### 5、编写第一个前端响应请求
+#### 5、编写第一个全局异常补获
+只需实现`WebsocketGlobalException`接口即可，`errorHandler`直接实现该方法，然后返回错误的时候全局的异常处理即可。
+```java
+public class WebsocketGlobalExceptionImpl implements WebsocketGlobalException {
+
+    @Override
+    public int level() {
+        return 0;
+    }
+
+    @Override
+    public Object errorHandler(Exception e) {
+        Map<String,Object> r = new HashMap<>();
+        r.put("code",200);
+        r.put("result","失败了");
+        return r;
+    }
+}
+
+```
+#### 6、编写第一个前端响应请求
 前端采用的是vue响应的方式，不过本质上还是用的是浏览器的本身自带的websocket因此写法上没什么差别，只是此处在与后端进行websocket交互的
 时候需要按照一定的格式往后端提交数据，格式如下：
 ```js
@@ -148,7 +168,7 @@ public class WebSocketHandlerListenterImpl implements WebSocketHandlerListenter 
   {'url': '/user/getUserVoByUserId', 'params': {'userId':'123'}}
 ```
 最后直接调用我们的websocket对象的send方法请求后端即可。
-#### 6、编写前端的实现
+#### 7、编写前端的实现
 ```js
 <template>
 <div>
@@ -232,6 +252,8 @@ websocket:
 ```
 ---
 ### 版本更新
+#### 1.0.5.RELEASE
+- 【新增】新增全局异常补获的机制。
 #### 1.0.4.RELEASE
 - 【BUG修复】握手的时候的监听事件未执行。
 #### 1.0.3.RELEASE

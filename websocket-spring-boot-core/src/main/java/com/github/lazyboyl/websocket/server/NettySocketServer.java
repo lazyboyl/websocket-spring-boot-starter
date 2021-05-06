@@ -1,6 +1,7 @@
 package com.github.lazyboyl.websocket.server;
 
 import com.github.lazyboyl.websocket.annotation.WebSocketController;
+import com.github.lazyboyl.websocket.exception.WebsocketGlobalException;
 import com.github.lazyboyl.websocket.factory.NettyDefaultBeanFactory;
 import com.github.lazyboyl.websocket.factory.WebSocketControllerBeanFactory;
 import com.github.lazyboyl.websocket.factory.WebsocketInterfaceBeanFactory;
@@ -64,6 +65,11 @@ public class NettySocketServer implements ApplicationContextAware {
     public static WebsocketInterfaceBeanFactory websocketHandlerListenterBeanFactory;
 
     /**
+     * WebsocketGlobalException的工厂扫描类
+     */
+    public static WebsocketInterfaceBeanFactory webSocketGolbalExceptionBeanFactory;
+
+    /**
      * 日志对象
      */
     private static Logger log = LoggerFactory.getLogger(NettySocketServer.class);
@@ -106,6 +112,7 @@ public class NettySocketServer implements ApplicationContextAware {
 
     /**
      * 功能描述： 初始化netty配置
+     *
      * @throws Exception 抛出异常
      */
     @PostConstruct
@@ -180,6 +187,8 @@ public class NettySocketServer implements ApplicationContextAware {
         injectionBean(WebsocketSecurity.class, websocketSecurityBeanFactory, nettyScanner);
         websocketHandlerListenterBeanFactory = WebsocketInterfaceBeanFactory.getInstance();
         injectionBean(WebSocketHandlerListenter.class, websocketHandlerListenterBeanFactory, nettyScanner);
+        webSocketGolbalExceptionBeanFactory = WebsocketInterfaceBeanFactory.getInstance();
+        injectionBean(WebsocketGlobalException.class, webSocketGolbalExceptionBeanFactory, nettyScanner);
     }
 
 

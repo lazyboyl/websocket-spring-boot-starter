@@ -33,7 +33,7 @@
                 this.websocketsend(JSON.stringify(actions))
             },
             getOrgVo() {
-                let actions = {'url': '/org/getOrgVo/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
+                let actions = {'url': '/org/getOrgVo111/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
                 this.websocketsend(JSON.stringify(actions))
             },
             getUserVoByUserList() {
