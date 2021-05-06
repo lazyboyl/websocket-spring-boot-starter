@@ -28,6 +28,14 @@ public class UserController {
     private String info;
 
     /**
+     * 抛出异常，用于全局异常补获
+     */
+    @WebSocketRequestMapping("throwException")
+    public Map throwException(){
+        throw new RuntimeException("我出错了");
+    }
+
+    /**
      * 批量推送当前登录用户的信息
      */
     @WebSocketRequestMapping("sendMsg")

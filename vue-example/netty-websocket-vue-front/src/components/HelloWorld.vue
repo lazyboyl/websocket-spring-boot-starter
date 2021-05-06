@@ -8,6 +8,7 @@
     <button @click="getOrgVo">getOrgVo</button>
     <button @click="getUserVoByUserIdRename">getUserVoByUserIdRename</button>
     <button @click="sendMsg">sendMsg</button>
+    <button @click="throwException">throwException</button>
   </div>
 </template>
 
@@ -25,6 +26,10 @@
             this.initWebSocket()
         },
         methods: {
+            throwException() {
+                let actions = {'url': '/user/throwException/', 'params': {}}
+                this.websocketsend(JSON.stringify(actions))
+            },
             getUserVoByUserIdRename() {
                 let actions = {
                     'url': '/user/getUserVoByUserIdRename/',
@@ -33,7 +38,7 @@
                 this.websocketsend(JSON.stringify(actions))
             },
             getOrgVo() {
-                let actions = {'url': '/org/getOrgVo111/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
+                let actions = {'url': '/org/getOrgVo/', 'params': {'orgId': 'sada11d', 'orgName': '林泽锋'}}
                 this.websocketsend(JSON.stringify(actions))
             },
             getUserVoByUserList() {

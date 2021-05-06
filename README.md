@@ -17,7 +17,7 @@ websocket-spring-boot-starter [![License](http://img.shields.io/:license-apache-
      <dependency>
          <groupId>com.github.lazyboyl</groupId>
          <artifactId>websocket-spring-boot-starter</artifactId>
-         <version>1.0.5.RELEASE</version>
+         <version>1.0.6.RELEASE</version>
      </dependency>
 ```
 
@@ -252,6 +252,8 @@ websocket:
 ```
 ---
 ### 版本更新
+#### 1.0.6.RELEASE
+- 【BUG修复】全局异常补获无入参时异常不补获BUG修复。
 #### 1.0.5.RELEASE
 - 【新增】新增全局异常补获的机制。
 #### 1.0.4.RELEASE
