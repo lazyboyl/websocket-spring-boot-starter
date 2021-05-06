@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.github.lazyboyl</groupId>
 	<artifactId>websocket-spring-boot-core</artifactId>
-	<version>1.0.5.RELEASE</version>
+	<version>1.0.6.RELEASE</version>
 	<name>websocket-spring-boot-core</name>
 	<description>核心包</description>
 

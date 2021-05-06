@@ -236,14 +236,14 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<WebSocketReque
      * @param paramMap              请求参数
      */
     protected void invokeMethod(ChannelHandlerContext ctx, NettyMethodDefinition nettyMethodDefinition, NettyBeanDefinition nettyBeanDefinition, Map<String, Object> paramMap) {
-        Object object = null;
+        Object object;
         if (nettyMethodDefinition.getParameters().length == 0) {
             try {
                 object = nettyMethodDefinition.getMethod().invoke(nettyBeanDefinition.getObject());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                List<NettyBeanDefinition> nettyBeanDefinitions = NettySocketServer.webSocketGolbalExceptionBeanFactory.getNettyBeanDefinitionList();
+                doExceptionHandler(ctx, nettyBeanDefinitions, "errorHandler", e);
+                return;
             }
         } else {
             Parameter[] ps = nettyMethodDefinition.getParameters();
